@@ -36,7 +36,7 @@ test('unsupported documents resolve to no edits', async () => {
 });
 test('providers propagate configuration errors', async () => {
   const extension = new Extension();
-  extension.optionsPersistent = { getOptionAsync: async () => { throw new Error('invalid config'); } };
+  extension.optionsResolver = { getOptionAsync: async () => { throw new Error('invalid config'); } };
   await assert.rejects(extension.provideDocumentFormattingEdits(doc('x'), {}), /invalid config/);
 });
 test('disposal unregisters every formatting provider exactly once', () => {
@@ -67,4 +67,26 @@ test('reset during a pending read does not cache stale configuration', async () 
   resolve[1]('{"html":{"indent_size":4}}'); await current;
   resolve[0]('{"html":{"indent_size":2}}'); await old;
   assert.equal((await store.getOptionAsync('html')).indent_size, 4);
+});
+
+test('explicit false and a custom indentation character override editor defaults', () => {
+  const extension = new Extension();
+  const original = { indent_with_tabs: false, indent_char: '\t', indent_size: 2 };
+  assert.deepEqual(extension.mergeOptions(original, { insertSpaces: false, tabSize: 8 }), original);
+  assert.deepEqual(original, { indent_with_tabs: false, indent_char: '\t', indent_size: 2 });
+});
+test('missing indentation character follows the resolved tab preference', () => {
+  const extension = new Extension();
+  assert.deepEqual(extension.mergeOptions({ indent_with_tabs: false }, { insertSpaces: false, tabSize: 4 }), {
+    indent_with_tabs: false, indent_char: ' ', indent_size: 4
+  });
+  assert.deepEqual(extension.mergeOptions({ indent_with_tabs: true }, { insertSpaces: true, tabSize: 2 }), {
+    indent_with_tabs: true, indent_char: '\t', indent_size: 2
+  });
+});
+test('editor indentation is used when no file override exists', () => {
+  const extension = new Extension();
+  assert.deepEqual(extension.mergeOptions({}, { insertSpaces: true, tabSize: 2 }), {
+    indent_with_tabs: false, indent_char: ' ', indent_size: 2
+  });
 });

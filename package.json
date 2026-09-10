@@ -2,7 +2,7 @@
   "name": "js-beautify-extentions",
   "displayName": "js-beautify for VSCode",
   "description": "js-beautify for VSCode",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "publisher": "banegasn",
   "engines": {
     "vscode": "^1.136.0"
@@ -78,7 +78,8 @@
           "default": [
             "auto"
           ],
-          "description": "%html.templating.desc%"
+          "description": "%html.templating.desc%",
+          "scope": "language-overridable"
         },
         "js-beautify-for-vscode.js.templating": {
           "type": "array",
@@ -108,7 +109,8 @@
           "default": [
             "auto"
           ],
-          "description": "%html.templating.desc%"
+          "description": "%html.templating.desc%",
+          "scope": "language-overridable"
         },
         "js-beautify-for-vscode.css.templating": {
           "type": "array",
@@ -138,7 +140,8 @@
           "default": [
             "auto"
           ],
-          "description": "%html.templating.desc%"
+          "description": "%html.templating.desc%",
+          "scope": "language-overridable"
         }
       }
     },

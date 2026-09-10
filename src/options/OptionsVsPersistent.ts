@@ -8,7 +8,7 @@ import { Options } from "./Options";
 export class OptionsVsCodePersistent implements IOptionsPersistent {
     private optionsMap?: Map<FormatType, Options>;
 
-    constructor() {
+    constructor(private scope?: vscode.ConfigurationScope) {
     }
 
     reset(): void {
@@ -21,8 +21,8 @@ export class OptionsVsCodePersistent implements IOptionsPersistent {
     }
 
     private load(): void {
-        const vsCodeConfig = vscode.workspace.getConfiguration();
-        const extensionConfig = vscode.workspace.getConfiguration('js-beautify-for-vscode');
+        const vsCodeConfig = vscode.workspace.getConfiguration(undefined, this.scope);
+        const extensionConfig = vscode.workspace.getConfiguration('js-beautify-for-vscode', this.scope);
         const options: CoreBeautifyOptions = {
             end_with_newline: vsCodeConfig.files.insertFinalNewLine,
             eol: vsCodeConfig.files.eol
