@@ -1,7 +1,11 @@
 # js-beautify for VS Code — Banegasn fork
 
-Version 1.0.8 requires **VS Code 1.136+**. The extension ID remains
-`nesterenok.js-beautify-extentions`, so existing default formatter settings continue to work.
+Version 1.0.9 requires **VS Code 1.136+**. The extension ID is now
+`banegasn.js-beautify-extentions`. Set `editor.defaultFormatter` to this ID and uninstall
+`nesterenok.js-beautify-extentions` to avoid duplicate commands and formatters.
+The `js-beautify-for-vscode.*` configuration keys remain unchanged.
+The publisher ID is configured for local VSIX installation; Marketplace publication
+requires registering the `banegasn` publisher separately.
 This fork is installed from its VSIX; the Marketplace link below refers to the upstream extension.
 
 The formatter uses js-beautify 2.0.3 with a reproducible `patch-package` fix for Angular
@@ -23,7 +27,7 @@ npm run package
 `test:vscode` runs an isolated VS Code 1.136.1 instance. Set `VSCODE_EXECUTABLE` to an
 existing VS Code executable to avoid downloading it (on macOS, the executable is
 inside `Visual Studio Code.app/Contents/MacOS/Code`). Your usual profile is not used.
-`npm run package` creates `js-beautify-extentions-1.0.8.vsix` with its formatter bundled.
+`npm run package` creates `js-beautify-extentions-1.0.9.vsix` with its formatter bundled.
 
 The tests include 48 expected outputs captured from 1.0.7, Angular `@let` regressions,
 configuration caching and failures, unchanged documents, and edit transactions.

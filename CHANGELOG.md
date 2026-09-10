@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.9 (2026-09-10)
+- Move the extension publisher to `banegasn`; the new extension ID is `banegasn.js-beautify-extentions`.
+- Preserve existing formatting configuration keys. Update `editor.defaultFormatter` and extension recommendations to the new ID; remove the old extension to avoid duplicate commands.
+
 ### 1.0.8 (2026-09-10) — fork Banegasn/js-beautify-extension
 - Update js-beautify to 2.0.3, preserving the Angular `@let` TEXT-token patch.
 - Update build and packaging tools; replace deprecated `vscode` development package with `@types/vscode`; remove unused ESLint plugin and track the lockfile.

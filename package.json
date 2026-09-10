@@ -2,8 +2,8 @@
   "name": "js-beautify-extentions",
   "displayName": "js-beautify for VSCode",
   "description": "js-beautify for VSCode",
-  "version": "1.0.8",
-  "publisher": "nesterenok",
+  "version": "1.0.9",
+  "publisher": "banegasn",
   "engines": {
     "vscode": "^1.136.0"
   },

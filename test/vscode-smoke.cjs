@@ -3,7 +3,7 @@ const vscode = require('vscode');
 const fs = require('node:fs');
 const path = require('node:path');
 exports.run = async function () {
-  const extension = vscode.extensions.getExtension('nesterenok.js-beautify-extentions');
+  const extension = vscode.extensions.getExtension('banegasn.js-beautify-extentions');
   assert.ok(extension);
   await extension.activate();
   const fixtures = require('./formatting-fixtures.json');

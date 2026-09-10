@@ -9,7 +9,7 @@ fs.writeFileSync(path.join(workspace, '.jsbeautifyrc.json'), JSON.stringify({
   js: { templating: ['angular'], indent_size: 4 }, css: { templating: ['angular'], indent_size: 4 }
 }));
 fs.writeFileSync(path.join(workspace, '.vscode/settings.json'), JSON.stringify({
-  'editor.defaultFormatter': 'nesterenok.js-beautify-extentions', 'editor.insertSpaces': true,
+  'editor.defaultFormatter': 'banegasn.js-beautify-extentions', 'editor.insertSpaces': true,
   'editor.tabSize': 4, 'extensions.autoUpdate': false, 'js-beautify-for-vscode.html.templating': ['angular'],
   'html.format.indentHandlebars': true, 'html.format.wrapAttributes': 'preserve', 'html.format.wrapLineLength': 140
 }));
