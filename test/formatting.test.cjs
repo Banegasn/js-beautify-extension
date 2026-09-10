@@ -15,3 +15,28 @@ test('Angular @let preserves the closing block and following sibling indentation
   assert.match(output, /\n  }\n  <footer>/);
   assert.equal(beautify.html(output, options), output);
 });
+
+for (const expression of [
+  "{ text: ';', a: 1 }",
+  "'; }'",
+  '{ text: "a;b", nested: { a: 1 } }',
+  String.raw`'escaped\'; }'`,
+  String.raw`"escaped\"; }"`,
+  String.raw`'backslash\\'; @let second = { text: ';' }`,
+  '`value; }`',
+  '`value ${"; }"}`',
+  '`value ${{ key: "; }" }.key}`',
+  '`outer ${`inner ${";"}; }`} end;`',
+  String.raw`'line\n; }'`,
+]) {
+  test(`Angular @let ignores quoted semicolons: ${expression}`, () => {
+    const declaration = `@let value = ${expression};`;
+    const options = { templating: ['angular'], indent_handlebars: true, indent_size: 2 };
+    const input = `<main>\n@if (ok) {\n${declaration}\n<p>{{ value }}</p>\n}\n<footer>End</footer>\n</main>`;
+    const result = beautify.html(input, options);
+    assert.ok(result.includes(declaration), 'declaration text must remain unchanged');
+    assert.match(result, /\n    <p>/);
+    assert.match(result, /\n  }\n  <footer>/);
+    assert.equal(beautify.html(result, options), result);
+  });
+}

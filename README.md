@@ -1,6 +1,6 @@
 # js-beautify for VS Code — Banegasn fork
 
-Version 1.0.9 requires **VS Code 1.136+**. The extension ID is now
+Version 1.0.10 requires **VS Code 1.136+**. The extension ID is now
 `banegasn.js-beautify-extentions`. Set `editor.defaultFormatter` to this ID and uninstall
 `nesterenok.js-beautify-extentions` to avoid duplicate commands and formatters.
 The `js-beautify-for-vscode.*` configuration keys remain unchanged.
@@ -11,6 +11,25 @@ This fork is installed from its VSIX; the Marketplace link below refers to the u
 The formatter uses js-beautify 2.0.3 with a reproducible `patch-package` fix for Angular
 `@let` declarations. Enable Angular templating as described below; the `<!-- {} -->`
 workaround is no longer needed.
+
+## Configuration resolution
+
+For each document, the extension uses `.jsbeautifyrc.json` in the root of that
+**document's workspace folder**. Different folders in a multi-root workspace have
+independent configurations. If the file does not exist, VS Code settings are resolved
+for the document's URI and language, including folder and language overrides.
+Unassociated untitled documents and files outside the workspace use their applicable
+VS Code settings; they do not inherit the first workspace folder's config file.
+
+Configuration files are read asynchronously and cached per folder. A non-recursive
+watcher for `.jsbeautifyrc.json` invalidates only that folder's cache when the file is
+created, changed or deleted, including changes made outside VS Code. Watcher events
+are asynchronous, so external changes take effect when VS Code reports them.
+
+Explicit `indent_with_tabs`, `indent_size` and `indent_char` values take precedence
+over editor defaults. In particular, `indent_with_tabs: false` is preserved even if
+the editor uses tabs. Angular `@let` strings support quoted semicolons, escaped quotes,
+and template literals with nested interpolations.
 
 ## Development and verification
 
@@ -27,12 +46,13 @@ npm run package
 `test:vscode` runs an isolated VS Code 1.136.1 instance. Set `VSCODE_EXECUTABLE` to an
 existing VS Code executable to avoid downloading it (on macOS, the executable is
 inside `Visual Studio Code.app/Contents/MacOS/Code`). Your usual profile is not used.
-`npm run package` creates `js-beautify-extentions-1.0.9.vsix` with its formatter bundled.
+`npm run package` creates `js-beautify-extentions-1.0.10.vsix` with its formatter bundled.
 
 The tests include 48 expected outputs captured from 1.0.7, Angular `@let` regressions,
 configuration caching and failures, unchanged documents, and edit transactions.
 The VS Code suite exercises document/range providers, both commands, multiple selections,
-undo, and configuration from a file and VS Code settings.
+undo, quoted semicolons, explicit indentation, and live configuration updates in a
+multi-root workspace, including folder/language overrides and untitled documents.
 
 For an additional local comparison against a saved, patched 1.0.7 engine:
 
@@ -49,7 +69,7 @@ for every input or option combination.
 
 The extension now activates for supported languages/commands, loads the formatter
 on first use, skips edits when the output is unchanged, and shares concurrent config
-reads. A local microbenchmark measured median bundle initialization at 0.074 ms before
+reads. For version 1.0.8, a local microbenchmark measured median bundle initialization at 0.074 ms before
 and 0.020 ms after (1,000 iterations after 200 warmups). This excludes parsing,
 activation and first-format work; it does not measure overall editor startup or
 formatting speed. Bundle size changed from 110,674 to 110,288 bytes.

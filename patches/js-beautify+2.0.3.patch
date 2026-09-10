@@ -1,17 +1,41 @@
 diff --git a/node_modules/js-beautify/js/src/html/tokenizer.js b/node_modules/js-beautify/js/src/html/tokenizer.js
-index 11aadf1..50b4727 100644
+index 11aadf1..bca5168 100644
 --- a/node_modules/js-beautify/js/src/html/tokenizer.js
 +++ b/node_modules/js-beautify/js/src/html/tokenizer.js
-@@ -239,6 +239,18 @@ Tokenizer.prototype._read_control_flows = function(c, open_token) {
+@@ -239,6 +239,42 @@ Tokenizer.prototype._read_control_flows = function(c, open_token) {
    }
  
    if (c === '@') {
 +    // @let is a declaration, not a block: emit `@let ... ;` as a single text token
 +    if (this._input.peek(1) === 'l' && this._input.peek(2) === 'e' && this._input.peek(3) === 't' && /\s/.test(this._input.peek(4) || '')) {
++      // A semicolon terminates the declaration only outside string literals.
++      // Track template interpolations too, including nested template strings.
++      var contexts = [];
 +      var ch = this._input.next();
 +      while (ch !== null) {
 +        resulting_string += ch;
-+        if (ch === ';') {
++        var context = contexts[contexts.length - 1];
++        if (context && context.quote) {
++          if (ch === '\\') {
++            var escaped = this._input.next();
++            if (escaped !== null) {
++              resulting_string += escaped;
++            }
++          } else if (ch === context.quote) {
++            contexts.pop();
++          } else if (context.quote === '`' && ch === '$' && this._input.peek() === '{') {
++            resulting_string += this._input.next();
++            contexts.push({ braces: 1 });
++          }
++        } else if (ch === "'" || ch === '"' || ch === '`') {
++          contexts.push({ quote: ch });
++        } else if (context) {
++          if (ch === '{') {
++            context.braces++;
++          } else if (ch === '}' && --context.braces === 0) {
++            contexts.pop();
++          }
++        } else if (ch === ';') {
 +          break;
 +        }
 +        ch = this._input.next();

@@ -1,5 +1,12 @@
 # Changelog
 
+### 1.0.10 (2026-09-10)
+- Fix Angular `@let` declarations containing semicolons in strings, escaped quotes, or nested template literals.
+- Preserve explicit indentation options, including `indent_with_tabs: false` and custom indentation characters.
+- Resolve configuration from the document's own workspace folder and language; keep untitled/outside-workspace documents independent of the first folder.
+- Replace synchronous config-file checks on document opening with asynchronous reads cached per folder and a targeted file watcher for create/change/delete events.
+- Add regression tests and VS Code integration coverage for multi-root workspaces, external config changes and option precedence.
+
 ### 1.0.9 (2026-09-10)
 - Move the extension publisher to `banegasn`; the new extension ID is `banegasn.js-beautify-extentions`.
 - Preserve existing formatting configuration keys. Update `editor.defaultFormatter` and extension recommendations to the new ID; remove the old extension to avoid duplicate commands.

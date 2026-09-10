@@ -7,7 +7,10 @@ import { readFile } from 'fs/promises';
 export class OptionsFilePersistent implements IOptionsPersistent {
     private pending?: Promise<JsBeautifyOptionFile>;
 
-    constructor(private _filename: string) {}
+    constructor(
+        private _filename: string,
+        private read: (filename: string) => Promise<string> = filename => readFile(filename, 'utf8')
+    ) {}
 
     get filename(): string { return this._filename; }
 
@@ -18,7 +21,7 @@ export class OptionsFilePersistent implements IOptionsPersistent {
 
     async getOptionAsync(type: FormatType): Promise<Options> {
         // Concurrent format requests share one read; reset invalidates that read.
-        const pending = this.pending ??= readFile(this._filename, 'utf8').then(
+        const pending = this.pending ??= this.read(this._filename).then(
             data => data.trim() ? JSON.parse(data) as JsBeautifyOptionFile : {}
         );
         try {
