@@ -1,4 +1,10 @@
-import { html, css, js, } from 'js-beautify';
+import type * as Beautify from 'js-beautify';
+
+// Load the formatter only on the first formatting request.
+let beautify: typeof Beautify | undefined;
+function getBeautify(): typeof Beautify {
+  return beautify ??= require('js-beautify') as typeof Beautify;
+}
 import { Formatter } from './Formatter';
 import * as vscode from 'vscode';
 import { FormatType } from './FormatType';
@@ -8,9 +14,9 @@ export class Formatters {
   private _formats = new Map<FormatType, Formatter>();
 
   constructor() {
-    const jsData = new Formatter(['javascript', 'typescript', 'json', 'jsonc'], FormatType.js, js);
-    const htmlData = new Formatter(['html', 'htm'], FormatType.html, html);
-    const cssData = new Formatter(['css', 'scss', 'less'], FormatType.css, css);
+    const jsData = new Formatter(['javascript', 'typescript', 'json', 'jsonc'], FormatType.js, (text, options) => getBeautify().js(text, options));
+    const htmlData = new Formatter(['html', 'htm'], FormatType.html, (text, options) => getBeautify().html(text, options));
+    const cssData = new Formatter(['css', 'scss', 'less'], FormatType.css, (text, options) => getBeautify().css(text, options));
 
     this._formats.set(jsData.type, jsData);
     this._formats.set(htmlData.type, htmlData);

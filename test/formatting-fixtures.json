@@ -1,0 +1,498 @@
+[
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let value = getValue();\n<button (click)=\"go()\">{{ value }}</button>\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<main>\n    @if (ok) {\n        @let value = getValue();\n        <button (click)=\"go()\">{{ value }}</button>\n    }\n    <footer>End</footer>\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let value = getValue();\n<button (click)=\"go()\">{{ value }}</button>\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<main>\n  @if (ok) {\n  @let value = getValue();\n  <button (click)=\"go()\">{{ value }}</button>\n  }\n  <footer>End</footer>\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let value = getValue();\n<button (click)=\"go()\">{{ value }}</button>\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<main>\r\n\t@if (ok) {\r\n\t@let value = getValue();\r\n\t<button (click)=\"go()\">{{ value }}</button>\r\n\t}\r\n\t<footer>End</footer>\r\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let obj = { a: 1 };\n@for (item of items; track item.id) {\n@let x = item.name;\n<span>{{ x }}</span>\n} @empty {\n<p>Empty</p>\n}\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<main>\n    @if (ok) {\n        @let obj = { a: 1 };\n        @for (item of items; track item.id) {\n            @let x = item.name;\n            <span>{{ x }}</span>\n        } @empty {\n            <p>Empty</p>\n        }\n    }\n    <footer>End</footer>\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let obj = { a: 1 };\n@for (item of items; track item.id) {\n@let x = item.name;\n<span>{{ x }}</span>\n} @empty {\n<p>Empty</p>\n}\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<main>\n  @if (ok) {\n  @let obj = { a: 1 };\n  @for (item of items; track item.id) {\n  @let x = item.name;\n  <span>{{ x }}</span>\n  } @empty {\n  <p>Empty</p>\n  }\n  }\n  <footer>End</footer>\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<main>\n@if (ok) {\n@let obj = { a: 1 };\n@for (item of items; track item.id) {\n@let x = item.name;\n<span>{{ x }}</span>\n} @empty {\n<p>Empty</p>\n}\n}\n<footer>End</footer>\n</main>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<main>\r\n\t@if (ok) {\r\n\t@let obj = { a: 1 };\r\n\t@for (item of items; track item.id) {\r\n\t@let x = item.name;\r\n\t<span>{{ x }}</span>\r\n\t} @empty {\r\n\t<p>Empty</p>\r\n\t}\r\n\t}\r\n\t<footer>End</footer>\r\n</main>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@let\n value = foo | async;\n<p>{{value}}</p>\n</div>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<div>\n    @let\n value = foo | async;\n    <p>{{value}}</p>\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@let\n value = foo | async;\n<p>{{value}}</p>\n</div>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<div>\n  @let\n  value = foo | async;\n  <p>{{value}}</p>\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@let\n value = foo | async;\n<p>{{value}}</p>\n</div>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<div>\r\n\t@let\r\n\tvalue = foo | async;\r\n\t<p>{{value}}</p>\r\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@switch (value) {\n@case (1) {\n<span>One</span>\n} @default {\n<span>Other</span>\n}\n}\n</div>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<div>\n    @switch (value) {\n        @case (1) {\n            <span>One</span>\n        } @default {\n            <span>Other</span>\n        }\n    }\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@switch (value) {\n@case (1) {\n<span>One</span>\n} @default {\n<span>Other</span>\n}\n}\n</div>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<div>\n  @switch (value) {\n  @case (1) {\n  <span>One</span>\n  } @default {\n  <span>Other</span>\n  }\n  }\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>\n@switch (value) {\n@case (1) {\n<span>One</span>\n} @default {\n<span>Other</span>\n}\n}\n</div>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<div>\r\n\t@switch (value) {\r\n\t@case (1) {\r\n\t<span>One</span>\r\n\t} @default {\r\n\t<span>Other</span>\r\n\t}\r\n\t}\r\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<div><custom-item foo=\"bar\" [value]=\"x\"><span>Text</span></custom-item></div>"
+  },
+  {
+    "kind": "html",
+    "input": "<html><head><style>.x{color:red}</style></head><body><script>function f(){return 1;}</script><p>Hi</p></body></html>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<html>\n\n<head>\n    <style>\n        .x {\n            color: red\n        }\n    </style>\n</head>\n\n<body>\n    <script>\n        function f() {\n            return 1;\n        }\n    </script>\n    <p>Hi</p>\n</body>\n\n</html>"
+  },
+  {
+    "kind": "html",
+    "input": "<html><head><style>.x{color:red}</style></head><body><script>function f(){return 1;}</script><p>Hi</p></body></html>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<html>\n\n<head>\n  <style>\n    .x {\n      color: red\n    }\n  </style>\n</head>\n\n<body>\n  <script>\n    function f() {\n      return 1;\n    }\n  </script>\n  <p>Hi</p>\n</body>\n\n</html>"
+  },
+  {
+    "kind": "html",
+    "input": "<html><head><style>.x{color:red}</style></head><body><script>function f(){return 1;}</script><p>Hi</p></body></html>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<html>\r\n\r\n<head>\r\n\t<style>\r\n\t\t.x {\r\n\t\t\tcolor: red\r\n\t\t}\r\n\t</style>\r\n</head>\r\n\r\n<body>\r\n\t<script>\r\n\t\tfunction f() {\r\n\t\t\treturn 1;\r\n\t\t}\r\n\t</script>\r\n\t<p>Hi</p>\r\n</body>\r\n\r\n</html>"
+  },
+  {
+    "kind": "html",
+    "input": "<!doctype html>\r\n<div>\r\n<span>One</span>\r\n</div>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<!doctype html>\r\n<div>\r\n    <span>One</span>\r\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<!doctype html>\r\n<div>\r\n<span>One</span>\r\n</div>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<!doctype html>\r\n<div>\r\n  <span>One</span>\r\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<!doctype html>\r\n<div>\r\n<span>One</span>\r\n</div>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<!doctype html>\r\n<div>\r\n\t<span>One</span>\r\n</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>{{#if ok}}<p>{{ value }}</p>{{/if}}</div>",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "<div>{{#if ok}}\n        <p>{{ value }}</p>\n    {{/if}}</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>{{#if ok}}<p>{{ value }}</p>{{/if}}</div>",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "<div>{{#if ok}}\n    <p>{{ value }}</p>\n  {{/if}}</div>"
+  },
+  {
+    "kind": "html",
+    "input": "<div>{{#if ok}}<p>{{ value }}</p>{{/if}}</div>",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "<div>{{#if ok}}\r\n\t\t<p>{{ value }}</p>\r\n\t{{/if}}</div>"
+  },
+  {
+    "kind": "js",
+    "input": "function f(a,b){return {a:a,b:b};}",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "function f(a, b) {\n    return {\n        a: a,\n        b: b\n    };\n}"
+  },
+  {
+    "kind": "js",
+    "input": "function f(a,b){return {a:a,b:b};}",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "function f(a, b) {\n  return {\n    a: a,\n    b: b\n  };\n}"
+  },
+  {
+    "kind": "js",
+    "input": "function f(a,b){return {a:a,b:b};}",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "function f(a, b) {\r\n\treturn {\r\n\t\ta: a,\r\n\t\tb: b\r\n\t};\r\n}"
+  },
+  {
+    "kind": "js",
+    "input": "const x = (a)=>a?.value ?? 0;",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "const x = (a) => a?.value ?? 0;"
+  },
+  {
+    "kind": "js",
+    "input": "const x = (a)=>a?.value ?? 0;",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "const x = (a) => a?.value ?? 0;"
+  },
+  {
+    "kind": "js",
+    "input": "const x = (a)=>a?.value ?? 0;",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "const x = (a) => a?.value ?? 0;"
+  },
+  {
+    "kind": "js",
+    "input": "// comment\nconst a={one:1,two:[2,3]};",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "// comment\nconst a = {\n    one: 1,\n    two: [2, 3]\n};"
+  },
+  {
+    "kind": "js",
+    "input": "// comment\nconst a={one:1,two:[2,3]};",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "// comment\nconst a = {\n  one: 1,\n  two: [2, 3]\n};"
+  },
+  {
+    "kind": "js",
+    "input": "// comment\nconst a={one:1,two:[2,3]};",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "// comment\r\nconst a = {\r\n\tone: 1,\r\n\ttwo: [2, 3]\r\n};"
+  },
+  {
+    "kind": "js",
+    "input": "{\"a\":[1,2],\"b\":{\"c\":true}}",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "{\n    \"a\": [1, 2],\n    \"b\": {\n        \"c\": true\n    }\n}"
+  },
+  {
+    "kind": "js",
+    "input": "{\"a\":[1,2],\"b\":{\"c\":true}}",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "{\n  \"a\": [1, 2],\n  \"b\": {\n    \"c\": true\n  }\n}"
+  },
+  {
+    "kind": "js",
+    "input": "{\"a\":[1,2],\"b\":{\"c\":true}}",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "{\r\n\t\"a\": [1, 2],\r\n\t\"b\": {\r\n\t\t\"c\": true\r\n\t}\r\n}"
+  },
+  {
+    "kind": "js",
+    "input": "interface X { value:string; }\nconst f=(x:X)=>x.value;",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "interface X {\n    value: string;\n}\nconst f = (x: X) => x.value;"
+  },
+  {
+    "kind": "js",
+    "input": "interface X { value:string; }\nconst f=(x:X)=>x.value;",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "interface X {\n  value: string;\n}\nconst f = (x: X) => x.value;"
+  },
+  {
+    "kind": "js",
+    "input": "interface X { value:string; }\nconst f=(x:X)=>x.value;",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "interface X {\r\n\tvalue: string;\r\n}\r\nconst f = (x: X) => x.value;"
+  },
+  {
+    "kind": "css",
+    "input": "a,b{color:red;margin:0 1px;}",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "a,\nb {\n    color: red;\n    margin: 0 1px;\n}"
+  },
+  {
+    "kind": "css",
+    "input": "a,b{color:red;margin:0 1px;}",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "a,\nb {\n  color: red;\n  margin: 0 1px;\n}"
+  },
+  {
+    "kind": "css",
+    "input": "a,b{color:red;margin:0 1px;}",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "a,\r\nb {\r\n\tcolor: red;\r\n\tmargin: 0 1px;\r\n}"
+  },
+  {
+    "kind": "css",
+    "input": "@media (min-width: 30em){.x{display:flex}}",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": "@media (min-width: 30em) {\n    .x {\n        display: flex\n    }\n}"
+  },
+  {
+    "kind": "css",
+    "input": "@media (min-width: 30em){.x{display:flex}}",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": "@media (min-width: 30em) {\n  .x {\n    display: flex\n  }\n}"
+  },
+  {
+    "kind": "css",
+    "input": "@media (min-width: 30em){.x{display:flex}}",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": "@media (min-width: 30em) {\r\n\t.x {\r\n\t\tdisplay: flex\r\n\t}\r\n}"
+  },
+  {
+    "kind": "css",
+    "input": ".foo{&:hover{color:red}}",
+    "options": {
+      "templating": [
+        "angular"
+      ],
+      "indent_handlebars": true,
+      "wrap_attributes": "preserve",
+      "wrap_line_length": 140,
+      "indent_size": 4
+    },
+    "expected": ".foo {\n    &:hover {\n        color: red\n    }\n}"
+  },
+  {
+    "kind": "css",
+    "input": ".foo{&:hover{color:red}}",
+    "options": {
+      "indent_size": 2
+    },
+    "expected": ".foo {\n  &:hover {\n    color: red\n  }\n}"
+  },
+  {
+    "kind": "css",
+    "input": ".foo{&:hover{color:red}}",
+    "options": {
+      "indent_with_tabs": true,
+      "eol": "\r\n"
+    },
+    "expected": ".foo {\r\n\t&:hover {\r\n\t\tcolor: red\r\n\t}\r\n}"
+  }
+]

@@ -6,22 +6,23 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { OptionsVsCodePersistent } from '../options/OptionsVsPersistent';
 import { OptionsFilePersistent } from '../options/OptionsFilePersistent';
-import { Options } from 'src/options/Options';
+import { Options } from '../options/Options';
 
-export class Extension implements Disposable {
+export class Extension implements vscode.Disposable {
     private readonly configFileName = '.jsbeautifyrc.json';
     private formatters = new Formatters();
     private optionsPersistent?: IOptionsPersistent;
     private vsCodeDispose: vscode.Disposable[] = [];
 
     activate(context: vscode.ExtensionContext) {
-        this[Symbol.dispose]();
+        this.dispose();
         
         const pathConfigFile = this.getConfigFilePath();
         this.optionsPersistent = pathConfigFile == null ? new OptionsVsCodePersistent() : new OptionsFilePersistent(pathConfigFile);
         this.register();
         
         let sub = context.subscriptions;
+        sub.push(this);
         sub.push(vscode.commands.registerCommand('js-beautify-ext.beautify', () => this.beautifyHandler(true)));
         sub.push(vscode.commands.registerCommand('js-beautify-ext.beautifyFile', () => this.beautifyHandler(false)));
         sub.push(vscode.workspace.onDidSaveTextDocument((document) => this.saveTextDocumentHandler(document)));
@@ -30,35 +31,23 @@ export class Extension implements Disposable {
     }
 
     /** Форматировать текущий документ */
-    private beautifyHandler(isSelection: boolean) {
+    private async beautifyHandler(isSelection: boolean) {
         const active = vscode.window.activeTextEditor;
-        if (!active || !active.document) return;
-        const document = active.document;
-        const formatter = this.formatters.getFormatter(document);
-        if(formatter && this.optionsPersistent){
-            const doc = new Document(active.document, formatter);
-            this.optionsPersistent.getOptionAsync(formatter.type).then((option)=>{
-                const vsCodeConfig = vscode.workspace.getConfiguration();
-                const vsOptions: vscode.FormattingOptions = vsCodeConfig.editor;
-                option = this.mergeOptions(option,vsOptions);
-
-                if (isSelection) {
-                    if (active.selection) {
-                        const ranges = active.selections.filter(selection => !selection.isEmpty);
-                        doc.formatSelection(ranges, option).then(texts => {
-                            this.replaceEditorText(active, texts);
-                        });
-                    }
-                } else {
-                    doc.formatFullAsync(option).then(texts => {
-                        if (texts != null) {
-                            this.replaceEditorText(active, [texts])
-                        }
-                    })
-                }
-            })
+        if (!active) return;
+        const formatter = this.formatters.getFormatter(active.document);
+        if (!formatter || !this.optionsPersistent) return;
+        const doc = new Document(active.document, formatter);
+        const options = this.mergeOptions(
+            await this.optionsPersistent.getOptionAsync(formatter.type),
+            vscode.workspace.getConfiguration().editor
+        );
+        if (isSelection) {
+            const edits = await doc.formatSelection(active.selections, options);
+            if (edits.length) await this.replaceEditorText(active, edits);
+        } else {
+            const edit = await doc.formatFullAsync(options);
+            if (edit) await this.replaceEditorText(active, [edit]);
         }
-        return Promise.resolve();
     }
 
     private saveTextDocumentHandler(document: vscode.TextDocument) {
@@ -89,11 +78,9 @@ export class Extension implements Disposable {
 
     /** Заменить текст в редакторе */
     private replaceEditorText(editor: vscode.TextEditor, values: ({ range: vscode.Range, text: string })[]) {
-        values.forEach(r => {
-            editor.edit(e => {
-                e.replace(r.range, r.text);
-            })
-        })
+        return editor.edit(edit => {
+            for (const value of values) edit.replace(value.range, value.text);
+        });
     };
 
     /** Получить путь к файлу конфигурации */
@@ -134,44 +121,20 @@ export class Extension implements Disposable {
         })
     };
 
-    private provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, vsOptions: vscode.FormattingOptions): vscode.ProviderResult<vscode.TextEdit[]> {
-      
-        return new Promise<vscode.TextEdit[]>((resolve) => {           
-            if (this.optionsPersistent) {              
-                const formatter = this.formatters.getFormatter(document);
-                if(formatter){
-                    const doc = new Document(document, formatter);                   
-                    return this.optionsPersistent.getOptionAsync(formatter.type).then((option)=>{                       
-                        option = this.mergeOptions(option, vsOptions);
-                        return doc.formatSelection([range], option).then(result => {
-                            const replaces = result.map(x => vscode.TextEdit.replace(x.range, x.text));
-                            resolve(replaces);
-                        })
-                    })
-                }
-            }
-            return;
-        });
+    private async provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, vsOptions: vscode.FormattingOptions): Promise<vscode.TextEdit[]> {
+        const formatter = this.formatters.getFormatter(document);
+        if (!formatter || !this.optionsPersistent) return [];
+        const options = this.mergeOptions(await this.optionsPersistent.getOptionAsync(formatter.type), vsOptions);
+        const edits = await new Document(document, formatter).formatSelection([range], options);
+        return edits.map(edit => vscode.TextEdit.replace(edit.range, edit.text));
     }
 
-    private provideDocumentFormattingEdits(document: vscode.TextDocument, vsOptions: vscode.FormattingOptions): vscode.ProviderResult<vscode.TextEdit[]> {
-        return new Promise<vscode.TextEdit[]>((resolve) => {
-            if (this.optionsPersistent) {
-                const formatter = this.formatters.getFormatter(document);
-                if(formatter){
-                    const doc = new Document(document, formatter);
-                    return this.optionsPersistent.getOptionAsync(formatter.type).then((option)=>{
-                        option = this.mergeOptions(option, vsOptions);
-                        return doc.formatFullAsync(option).then(result => {
-                            resolve(result ? [new vscode.TextEdit(result.range, result.text)] : [])
-                        });
-                    });                
-                }
-            }
-            return;
-        });
-
-        
+    private async provideDocumentFormattingEdits(document: vscode.TextDocument, vsOptions: vscode.FormattingOptions): Promise<vscode.TextEdit[]> {
+        const formatter = this.formatters.getFormatter(document);
+        if (!formatter || !this.optionsPersistent) return [];
+        const options = this.mergeOptions(await this.optionsPersistent.getOptionAsync(formatter.type), vsOptions);
+        const edit = await new Document(document, formatter).formatFullAsync(options);
+        return edit ? [vscode.TextEdit.replace(edit.range, edit.text)] : [];
     }
 
     /** Смешать параметры хранилища и параметры от VsCode */
@@ -182,7 +145,7 @@ export class Extension implements Disposable {
         return options;
     }
 
-    [Symbol.dispose](): void {
+    dispose(): void {
         this.vsCodeDispose.forEach(x=>x.dispose());
         this.vsCodeDispose = [];
     }
