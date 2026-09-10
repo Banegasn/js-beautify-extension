@@ -1,0 +1,23 @@
+diff --git a/node_modules/js-beautify/js/src/html/tokenizer.js b/node_modules/js-beautify/js/src/html/tokenizer.js
+index 11aadf1..50b4727 100644
+--- a/node_modules/js-beautify/js/src/html/tokenizer.js
++++ b/node_modules/js-beautify/js/src/html/tokenizer.js
+@@ -239,6 +239,18 @@ Tokenizer.prototype._read_control_flows = function(c, open_token) {
+   }
+ 
+   if (c === '@') {
++    // @let is a declaration, not a block: emit `@let ... ;` as a single text token
++    if (this._input.peek(1) === 'l' && this._input.peek(2) === 'e' && this._input.peek(3) === 't' && /\s/.test(this._input.peek(4) || '')) {
++      var ch = this._input.next();
++      while (ch !== null) {
++        resulting_string += ch;
++        if (ch === ';') {
++          break;
++        }
++        ch = this._input.next();
++      }
++      return this._create_token(TOKEN.TEXT, resulting_string);
++    }
+     resulting_string = this.__patterns.angular_control_flow_start.read();
+     if (resulting_string === '') {
+       return token;

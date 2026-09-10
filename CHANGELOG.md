@@ -1,4 +1,8 @@
 # Changelog
+### 1.0.7 (2026-09-10) — fork Banegasn/js-beautify-extension
+- Angular `@let` declarations no longer break the indentation of the template that follows them (js-beautify tokenizer treated `@let` as a control-flow block; patched via `patch-package`, see [beautifier/js-beautify#2319](https://github.com/beautifier/js-beautify/issues/2319))
+- Pin js-beautify to 1.15.4
+
 ### 1.0.6 (2024-05-02)
 - Add JSON Validation for .beautifyrc.json
 
