@@ -2,10 +2,10 @@
   "name": "js-beautify-extentions",
   "displayName": "js-beautify for VSCode",
   "description": "js-beautify for VSCode",
-  "version": "1.0.6",
-  "publisher": "nesterenok",
+  "version": "1.0.9",
+  "publisher": "banegasn",
   "engines": {
-    "vscode": "^1.22.0"
+    "vscode": "^1.136.0"
   },
   "categories": [
     "Programming Languages",
@@ -24,7 +24,17 @@
   "license": "MIT",
   "main": "./dist/extension",
   "activationEvents": [
-    "onStartupFinished"
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:json",
+    "onLanguage:jsonc",
+    "onLanguage:html",
+    "onLanguage:htm",
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:less",
+    "onCommand:js-beautify-ext.beautify",
+    "onCommand:js-beautify-ext.beautifyFile"
   ],
   "contributes": {
     "commands": [
@@ -140,27 +150,34 @@
     ]
   },
   "dependencies": {
-    "@types/js-beautify": "^1.14.3",   
-    "js-beautify": "^1.15.1"
+    "js-beautify": "2.0.3"
   },
   "devDependencies": {
-    "@types/node": "^20.12.8",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "esbuild": "^0.20.2",
-    "typescript": "^5.4.5",
-    "vscode": "^1.1.37"
+    "@types/js-beautify": "1.14.3",
+    "@types/node": "22.20.2",
+    "@types/vscode": "1.136.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "3.9.2",
+    "esbuild": "0.28.2",
+    "patch-package": "8.0.1",
+    "typescript": "7.0.2"
   },
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify",
     "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
-    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "postinstall": "patch-package",
+    "check": "tsc --noEmit",
+    "package": "vsce package --no-dependencies",
+    "test": "node --test test/*.test.cjs",
+    "test:vscode": "npm run esbuild-base -- --minify && node test/run-vscode.cjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NesTeRDGIT/js-beautify-extension"
+    "url": "https://github.com/Banegasn/js-beautify-extension"
   },
   "bugs": {
-    "url": "https://github.com/NesTeRDGIT/js-beautify-extension/issues"
+    "url": "https://github.com/Banegasn/js-beautify-extension/issues"
   }
 }

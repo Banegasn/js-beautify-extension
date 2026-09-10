@@ -15,36 +15,22 @@ export class OptionsVsCodePersistent implements IOptionsPersistent {
         this.optionsMap = undefined;
     }
 
-    getOptionAsync = (type: FormatType): Promise<Options> => {
-        return new Promise<Options>((resolve) => {
-            if (this.optionsMap) {
-                const option = this.optionsMap.get(type);
-                resolve( option ? Object.assign({}, option) : {});
-            } else {
-                this.loadAsync().then(() => {
-                    this.getOptionAsync(type).then(v => resolve(v));
-                });
-            }
-        });
+    async getOptionAsync(type: FormatType): Promise<Options> {
+        if (!this.optionsMap) this.load();
+        return { ...this.optionsMap!.get(type) };
     }
 
-    /** Загрузить параметры */
-    private loadAsync = (): Promise<void> => {
-        return new Promise((resolve) => {
-            const vsCodeConfig = vscode.workspace.getConfiguration();
-            const extensionConfig = vscode.workspace.getConfiguration('js-beautify-for-vscode');
-            
-            const options: CoreBeautifyOptions = {
-                end_with_newline: vsCodeConfig.files.insertFinalNewLine,
-                eol: vsCodeConfig.files.eol
-            };
-
-            this.optionsMap = new Map();
-            this.createHtmlOptions(vsCodeConfig, extensionConfig, {...options});
-            this.createJsOptions(vsCodeConfig, extensionConfig, {...options});
-            this.createCssOptions(vsCodeConfig, extensionConfig, {...options});
-            resolve();
-        });
+    private load(): void {
+        const vsCodeConfig = vscode.workspace.getConfiguration();
+        const extensionConfig = vscode.workspace.getConfiguration('js-beautify-for-vscode');
+        const options: CoreBeautifyOptions = {
+            end_with_newline: vsCodeConfig.files.insertFinalNewLine,
+            eol: vsCodeConfig.files.eol
+        };
+        this.optionsMap = new Map();
+        this.createHtmlOptions(vsCodeConfig, extensionConfig, { ...options });
+        this.createJsOptions(vsCodeConfig, extensionConfig, { ...options });
+        this.createCssOptions(vsCodeConfig, extensionConfig, { ...options });
     }
 
     /** Создать параметры для html */

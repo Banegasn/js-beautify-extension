@@ -1,63 +1,38 @@
-import { FormatType } from "../formatters/FormatType";
-import { IOptionsPersistent } from "./IOptionsPersistent";
-import { Options } from "./Options";
-import { JSBeautifyOptions, HTMLBeautifyOptions, CSSBeautifyOptions } from 'js-beautify';
-import * as fs from 'fs';
+import { FormatType } from '../formatters/FormatType';
+import type { IOptionsPersistent } from './IOptionsPersistent';
+import type { Options } from './Options';
+import type { JSBeautifyOptions, HTMLBeautifyOptions, CSSBeautifyOptions } from 'js-beautify';
+import { readFile } from 'fs/promises';
 
-/** Хранилище параметров в файлах */
 export class OptionsFilePersistent implements IOptionsPersistent {
-    private optionsMap?: Map<FormatType, Options>;
-    private _filename: string;
+    private pending?: Promise<JsBeautifyOptionFile>;
 
-    constructor(filename: string) {
-        this._filename = filename;
+    constructor(private _filename: string) {}
+
+    get filename(): string { return this._filename; }
+
+    reset(filename?: string): void {
+        if (filename) this._filename = filename;
+        this.pending = undefined;
     }
-    
-    get filename():string {
-        return this._filename;
-    }
-    
-    reset(): void;
-    reset(filename?:string): void {
-        if(filename){
-            this._filename = filename;
+
+    async getOptionAsync(type: FormatType): Promise<Options> {
+        // Concurrent format requests share one read; reset invalidates that read.
+        const pending = this.pending ??= readFile(this._filename, 'utf8').then(
+            data => data.trim() ? JSON.parse(data) as JsBeautifyOptionFile : {}
+        );
+        try {
+            const options = await pending;
+            return { ...options[type] };
+        } catch (error) {
+            if (this.pending === pending) this.pending = undefined;
+            throw error;
         }
-        this.optionsMap = undefined;
-    }
-
-    getOptionAsync = (type: FormatType): Promise<Options> => {
-        return new Promise<Options>((resolve) => {
-            if (this.optionsMap) {
-                const option = this.optionsMap.get(type);
-                resolve(option ? Object.assign({}, option) : {});
-            } else {
-                this.loadAsync().then(() => {
-                    this.getOptionAsync(type).then(v => resolve(Object.create(v)));
-                });
-            }
-        });
-    }
-
-    /** Загрузить параметры */
-    private loadAsync = (): Promise<void> => {
-        return new Promise((resolve) => {
-            return fs.readFile(this._filename, 'utf8', (e, data) => {
-                this.optionsMap = new Map();
-                if(data != ''){
-                    const optionFromFile: JsBeautifyOptionFile = JSON.parse(data);
-                    this.optionsMap.set(FormatType.js, optionFromFile.js);
-                    this.optionsMap.set(FormatType.css, optionFromFile.css);
-                    this.optionsMap.set(FormatType.html, optionFromFile.html);
-                }
-                resolve();
-            })
-        })
     }
 }
 
-/** Формат файла .jsbeautifyrc */
 export interface JsBeautifyOptionFile {
-    html: HTMLBeautifyOptions;
-    js: JSBeautifyOptions;
-    css: CSSBeautifyOptions;
+    html?: HTMLBeautifyOptions;
+    js?: JSBeautifyOptions;
+    css?: CSSBeautifyOptions;
 }

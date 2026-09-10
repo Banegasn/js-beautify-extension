@@ -1,27 +1,16 @@
 {
-  "compileOnSave": false,
-
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist",
-    "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2022",
-    "module": "commonjs",
-    "skipLibCheck": false,
-    "lib": [
-      "es2022",
-      "dom"
-    ]
-  }
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "types": ["node", "vscode"],
+    "lib": ["ES2022"]
+  },
+  "include": ["src/**/*.ts"]
 }

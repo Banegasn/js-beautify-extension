@@ -1,3 +1,61 @@
+# js-beautify for VS Code — Banegasn fork
+
+Version 1.0.9 requires **VS Code 1.136+**. The extension ID is now
+`banegasn.js-beautify-extentions`. Set `editor.defaultFormatter` to this ID and uninstall
+`nesterenok.js-beautify-extentions` to avoid duplicate commands and formatters.
+The `js-beautify-for-vscode.*` configuration keys remain unchanged.
+The publisher ID is configured for local VSIX installation; Marketplace publication
+requires registering the `banegasn` publisher separately.
+This fork is installed from its VSIX; the Marketplace link below refers to the upstream extension.
+
+The formatter uses js-beautify 2.0.3 with a reproducible `patch-package` fix for Angular
+`@let` declarations. Enable Angular templating as described below; the `<!-- {} -->`
+workaround is no longer needed.
+
+## Development and verification
+
+Use Node.js 22.12+ and npm. Install development dependencies when building:
+
+```sh
+npm ci
+npm run check
+npm test
+npm run test:vscode
+npm run package
+```
+
+`test:vscode` runs an isolated VS Code 1.136.1 instance. Set `VSCODE_EXECUTABLE` to an
+existing VS Code executable to avoid downloading it (on macOS, the executable is
+inside `Visual Studio Code.app/Contents/MacOS/Code`). Your usual profile is not used.
+`npm run package` creates `js-beautify-extentions-1.0.9.vsix` with its formatter bundled.
+
+The tests include 48 expected outputs captured from 1.0.7, Angular `@let` regressions,
+configuration caching and failures, unchanged documents, and edit transactions.
+The VS Code suite exercises document/range providers, both commands, multiple selections,
+undo, and configuration from a file and VS Code settings.
+
+For an additional local comparison against a saved, patched 1.0.7 engine:
+
+```sh
+node test/compare-corpus.cjs /path/to/old/js-beautify /path/to/source-repo
+node test/benchmark.cjs /path/to/old/extension.js dist/extension.js
+```
+
+The corpus comparison checks HTML, JS/TS and CSS/SCSS with Angular templating,
+4-space indentation, preserved attributes, and a 140-column wrap limit; files over
+200 KB are excluded. On 2026-09-10, 14,379 files from the two client repositories
+produced identical output. This is sampled compatibility evidence, not a guarantee
+for every input or option combination.
+
+The extension now activates for supported languages/commands, loads the formatter
+on first use, skips edits when the output is unchanged, and shares concurrent config
+reads. A local microbenchmark measured median bundle initialization at 0.074 ms before
+and 0.020 ms after (1,000 iterations after 200 warmups). This excludes parsing,
+activation and first-format work; it does not measure overall editor startup or
+formatting speed. Bundle size changed from 110,674 to 110,288 bytes.
+
+## Original extension documentation
+
 VSCode by default uses [js-beautify](https://github.com/beautifier/js-beautify) to format the code, but not all js-beautify settings can be edited in VSCode
 
 This extension uses either the VSCode settings for the js-beautify configuration or the .jsbeautifyrc.json file. If the .jsbeautifyrc.json file is present in the project root, then the settings from .jsbeautifyrc will be used, if not, then the VSCode settings will be used
